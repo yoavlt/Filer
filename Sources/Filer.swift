@@ -34,6 +34,12 @@ public class Filer {
         }
     }
 
+    public var relativePath: String {
+        get {
+            return "\(dirName)/\(fileName)"
+        }
+    }
+
     public var isExists: Bool {
         get {
             return Filer.exists(directory, path: path)
@@ -57,6 +63,10 @@ public class Filer {
     
     public func delete() -> Bool {
         return Filer.rm(directory, path: self.fileName)
+    }
+    
+    public func copyTo(toPath: String) -> Bool {
+        return Filer.cp(directory, srcPath: relativePath, toPath: toPath)
     }
 
     // MARK: static methods
