@@ -41,7 +41,7 @@ class FilerTests: XCTestCase {
         XCTAssert(file.delete(), "delete file")
         XCTAssertFalse(file.isExists, "test delete file")
     }
-    
+
     func testCopyFile() {
         let file = Filer(fileName: "test.txt")
         FileWriter(file: file).write("test!!")
@@ -51,7 +51,27 @@ class FilerTests: XCTestCase {
         XCTAssert(Filer.rm(.DocumentDirectory, path: "test.txt"), "delete file")
         XCTAssert(Filer.rm(.DocumentDirectory, path: "test2.txt"), "delete file")
     }
+
+    func testMoveFile() {
+        let file = Filer(directory: .DocumentDirectory, fileName: "test.txt")
+        XCTAssert(FileWriter(file: file).write("test!!"), "write file")
+        XCTAssert(file.isExists, "write file")
+        XCTAssert(Filer.mv(.DocumentDirectory, srcPath: "test.txt", toPath: "test4.txt"), "move file successfuly")
+        XCTAssertFalse(file.isExists, "moved file")
+        XCTAssert(Filer(fileName: "test4.txt").isExists, "moved")
+        XCTAssert(Filer.rm(.DocumentDirectory, path: "test4.txt"), "delete file")
+    }
     
+    func testMoveMethodFile() {
+        let file = Filer(directory: .DocumentDirectory, fileName: "test.txt")
+        XCTAssert(FileWriter(file: file).write("test!!"), "write file")
+        XCTAssert(file.isExists, "write file")
+        XCTAssert(file.moveTo("test4.txt"), "move file successfuly")
+        XCTAssertFalse(file.isExists, "moved file")
+        XCTAssert(Filer(fileName: "test4.txt").isExists, "moved")
+        XCTAssert(Filer.rm(.DocumentDirectory, path: "test4.txt"), "delete file")
+    }
+
     func testCopyMethods() {
         let file = Filer(fileName: "test.txt")
         FileWriter(file: file).write("test!!")

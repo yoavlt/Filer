@@ -46,7 +46,7 @@ public class Filer {
 
     public var isExists: Bool {
         get {
-            return Filer.exists(directory, path: path)
+            return Filer.exists(directory, path: relativePath)
         }
     }
 
@@ -102,7 +102,7 @@ public class Filer {
         return withDir(directory) { path, manager in
             let from = "\(path)/\(srcPath)"
             let to = "\(path)/\(toPath)"
-            return manager.moveItemAtPath(srcPath, toPath: toPath, error: nil)
+            return manager.moveItemAtPath(from, toPath: to, error: nil)
         }
     }
 
