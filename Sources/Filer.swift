@@ -36,7 +36,11 @@ public class Filer {
 
     public var relativePath: String {
         get {
-            return "\(dirName)/\(fileName)"
+            if let dir = dirName {
+                return "\(dir)/\(fileName)"
+            } else {
+                return fileName
+            }
         }
     }
 

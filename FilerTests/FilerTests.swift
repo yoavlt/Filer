@@ -52,6 +52,16 @@ class FilerTests: XCTestCase {
         XCTAssert(Filer.rm(.DocumentDirectory, path: "test2.txt"), "delete file")
     }
     
+    func testCopyMethods() {
+        let file = Filer(fileName: "test.txt")
+        FileWriter(file: file).write("test!!")
+        XCTAssert(file.copyTo("test2.txt"), "copy file successfuly")
+        XCTAssert(Filer.exists(.DocumentDirectory, path: "test.txt"), "test dupliated")
+        XCTAssert(Filer.exists(.DocumentDirectory, path: "test2.txt"), "test dupliated")
+        XCTAssert(file.delete(), "delete successfuly")
+        XCTAssert(Filer.rm(.DocumentDirectory, path: "test2.txt"), "delete file")
+    }
+    
     func testPerformanceExample() {
         // This is an example of a performance test case.
         self.measureBlock() {
