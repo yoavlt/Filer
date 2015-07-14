@@ -68,6 +68,10 @@ public class Filer {
     public func copyTo(toPath: String) -> Bool {
         return Filer.cp(directory, srcPath: relativePath, toPath: toPath)
     }
+    
+    public func moveTo(toPath: String) -> Bool {
+        return Filer.mv(directory, srcPath: relativePath, toPath: toPath)
+    }
 
     // MARK: static methods
     public static func withDir <T> (directory: NSSearchPathDirectory, f: (String, NSFileManager) -> T) -> T {
