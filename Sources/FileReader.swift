@@ -14,6 +14,14 @@ public class FileReader {
         self.file = file
     }
     public func read() -> String {
+        return readString()
+    }
+    public func readString() -> String {
         return NSString(contentsOfFile: file.path, encoding: NSUTF8StringEncoding, error: nil) as! String
+    }
+    public func readData() -> NSData? {
+        return Filer.withDir(file.directory) { dirPath, manager in
+            return manager.contentsAtPath(self.file.path)
+        }
     }
 }
