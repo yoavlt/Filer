@@ -82,6 +82,29 @@ class FilerTests: XCTestCase {
         XCTAssert(Filer.rm(.DocumentDirectory, path: "test2.txt"), "delete file")
     }
     
+    func contains <T : Equatable> (coll: [T], value: T) -> Bool {
+        for item in coll {
+            if item == value {
+                return true
+            }
+        }
+        return false
+    }
+    
+    func testLs() {
+        let sampleFileNames = ["test.txt", "test2.txt", "test3.txt"]
+        for name in sampleFileNames {
+            let file = Filer(fileName: name)
+            FileWriter(file: file).write("test!!")
+        }
+        let files = Filer.ls(.DocumentDirectory, dir: "")!
+        println(files)
+        for file in files {
+            XCTAssert(contains(sampleFileNames, value: file), "filename matches")
+            Filer.rm(.DocumentDirectory, path: file)
+        }
+    }
+    
     func testPerformanceExample() {
         // This is an example of a performance test case.
         self.measureBlock() {

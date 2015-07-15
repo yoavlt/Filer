@@ -20,7 +20,7 @@ public class FileReader {
         return NSString(contentsOfFile: file.path, encoding: NSUTF8StringEncoding, error: nil) as! String
     }
     public func readData() -> NSData? {
-        return Filer.withDir(file.directory) { dirPath, manager in
+        return Filer.withDir(file.directory) { _, manager in
             return manager.contentsAtPath(self.file.path)
         }
     }

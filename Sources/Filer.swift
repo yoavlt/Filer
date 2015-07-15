@@ -124,4 +124,11 @@ public class Filer {
             return manager.fileExistsAtPath(path)
         }
     }
+
+    public static func ls(directory: NSSearchPathDirectory, dir: String) -> [String]? {
+        return withDir(directory) { dirPath, manager in
+            let path = "\(dirPath)/\(dir)"
+            return manager.contentsOfDirectoryAtPath(path, error: nil)?.map { $0 as! String }
+        }
+    }
 }
