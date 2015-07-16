@@ -104,6 +104,15 @@ class FilerTests: XCTestCase {
         }
     }
     
+    func testExt() {
+        let sampleFileNames = ["test.txt", "test.bin", "test.png"]
+        let correctExts = ["txt", "bin", "png"]
+        let sampleFiles = sampleFileNames.map { Filer(fileName: $0) }
+        for file in sampleFiles {
+            XCTAssert(contains(correctExts, value: file.ext!), "contains extension")
+        }
+    }
+    
     func testPerformanceExample() {
         // This is an example of a performance test case.
         self.measureBlock() {

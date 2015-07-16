@@ -55,6 +55,12 @@ public class Filer {
             return NSURL(fileURLWithPath: self.path)!
         }
     }
+    
+    public var ext: String? {
+        get {
+            return split(fileName, isSeparator: { $0 == "." }).last
+        }
+    }
 
     public init(directory: NSSearchPathDirectory, dirName: String?, fileName: String) {
         self.directory = directory
