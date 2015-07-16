@@ -50,6 +50,12 @@ public class Filer {
         }
     }
 
+    public var url: NSURL {
+        get {
+            return NSURL(fileURLWithPath: self.path)!
+        }
+    }
+
     public init(directory: NSSearchPathDirectory, dirName: String?, fileName: String) {
         self.directory = directory
         self.dirName = dirName
