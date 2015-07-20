@@ -28,10 +28,10 @@ class FilerTests: XCTestCase {
     }
     
     func testCreateDeleteDirectory() {
-        XCTAssert(Filer.mkdir(.DocumentDirectory, dirName: "hoge"), "create directory successfuly")
-        XCTAssert(Filer.exists(.DocumentDirectory, path: "hoge"), "exists diretory")
-        XCTAssert(Filer.rmdir(.DocumentDirectory, dirName: "hoge"), "delete directory successfuly")
-        XCTAssertFalse(Filer.exists(.DocumentDirectory, path: "hoge"), "didn't exists diretory")
+        XCTAssert(Filer.mkdir(.Document, dirName: "hoge"), "create directory successfuly")
+        XCTAssert(Filer.exists(.Document, path: "hoge"), "exists diretory")
+        XCTAssert(Filer.rmdir(.Document, dirName: "hoge"), "delete directory successfuly")
+        XCTAssertFalse(Filer.exists(.Document, path: "hoge"), "didn't exists diretory")
     }
     
     func testReadWriteFile() {
@@ -45,41 +45,41 @@ class FilerTests: XCTestCase {
     func testCopyFile() {
         let file = Filer(fileName: "test.txt")
         FileWriter(file: file).write("test!!")
-        XCTAssert(Filer.cp(.DocumentDirectory, srcPath: "test.txt", toPath: "test2.txt"), "copy file successfuly")
-        XCTAssert(Filer.exists(.DocumentDirectory, path: "test.txt"), "test dupliated")
-        XCTAssert(Filer.exists(.DocumentDirectory, path: "test2.txt"), "test dupliated")
-        XCTAssert(Filer.rm(.DocumentDirectory, path: "test.txt"), "delete file")
-        XCTAssert(Filer.rm(.DocumentDirectory, path: "test2.txt"), "delete file")
+        XCTAssert(Filer.cp(.Document, srcPath: "test.txt", toPath: "test2.txt"), "copy file successfuly")
+        XCTAssert(Filer.exists(.Document, path: "test.txt"), "test dupliated")
+        XCTAssert(Filer.exists(.Document, path: "test2.txt"), "test dupliated")
+        XCTAssert(Filer.rm(.Document, path: "test.txt"), "delete file")
+        XCTAssert(Filer.rm(.Document, path: "test2.txt"), "delete file")
     }
 
     func testMoveFile() {
-        let file = Filer(directory: .DocumentDirectory, fileName: "test.txt")
+        let file = Filer(directory: .Document, fileName: "test.txt")
         XCTAssert(FileWriter(file: file).write("test!!"), "write file")
         XCTAssert(file.isExists, "write file")
-        XCTAssert(Filer.mv(.DocumentDirectory, srcPath: "test.txt", toPath: "test4.txt"), "move file successfuly")
+        XCTAssert(Filer.mv(.Document, srcPath: "test.txt", toPath: "test4.txt"), "move file successfuly")
         XCTAssertFalse(file.isExists, "moved file")
         XCTAssert(Filer(fileName: "test4.txt").isExists, "moved")
-        XCTAssert(Filer.rm(.DocumentDirectory, path: "test4.txt"), "delete file")
+        XCTAssert(Filer.rm(.Document, path: "test4.txt"), "delete file")
     }
     
     func testMoveMethodFile() {
-        let file = Filer(directory: .DocumentDirectory, fileName: "test.txt")
+        let file = Filer(directory: .Document, fileName: "test.txt")
         XCTAssert(FileWriter(file: file).write("test!!"), "write file")
         XCTAssert(file.isExists, "write file")
         XCTAssert(file.moveTo("test4.txt"), "move file successfuly")
         XCTAssertFalse(file.isExists, "moved file")
         XCTAssert(Filer(fileName: "test4.txt").isExists, "moved")
-        XCTAssert(Filer.rm(.DocumentDirectory, path: "test4.txt"), "delete file")
+        XCTAssert(Filer.rm(.Document, path: "test4.txt"), "delete file")
     }
 
     func testCopyMethods() {
         let file = Filer(fileName: "test.txt")
         FileWriter(file: file).write("test!!")
         XCTAssert(file.copyTo("test2.txt"), "copy file successfuly")
-        XCTAssert(Filer.exists(.DocumentDirectory, path: "test.txt"), "test dupliated")
-        XCTAssert(Filer.exists(.DocumentDirectory, path: "test2.txt"), "test dupliated")
+        XCTAssert(Filer.exists(.Document, path: "test.txt"), "test dupliated")
+        XCTAssert(Filer.exists(.Document, path: "test2.txt"), "test dupliated")
         XCTAssert(file.delete(), "delete successfuly")
-        XCTAssert(Filer.rm(.DocumentDirectory, path: "test2.txt"), "delete file")
+        XCTAssert(Filer.rm(.Document, path: "test2.txt"), "delete file")
     }
     
     func contains <T : Equatable> (coll: [T], value: T) -> Bool {
@@ -97,10 +97,10 @@ class FilerTests: XCTestCase {
             let file = Filer(fileName: name)
             FileWriter(file: file).write("test!!")
         }
-        let files = Filer.ls(.DocumentDirectory, dir: "")!
+        let files = Filer.ls(.Document, dir: "")!
         for file in files {
             XCTAssert(contains(sampleFileNames, value: file), "filename matches")
-            Filer.rm(.DocumentDirectory, path: file)
+            Filer.rm(.Document, path: file)
         }
     }
     
