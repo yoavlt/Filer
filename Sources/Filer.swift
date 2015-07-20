@@ -8,6 +8,34 @@
 
 import Foundation
 
+public enum StoreDirectory {
+    case Home
+    case Temp
+    case Cache
+    case Inbox
+    case Library
+    case SearchDirectory(NSSearchPathDirectory)
+
+    public func path() -> String {
+        switch self {
+        case .Home:
+            return NSHomeDirectory()
+        case .Temp:
+            return NSTemporaryDirectory()
+        case .Cache:
+            return StoreDirectory.SearchDirectory(.CachesDirectory).path()
+        case .Inbox:
+            return "\(StoreDirectory.Library.path())/Inbox"
+        case .Library:
+            return StoreDirectory.SearchDirectory(.LibraryDirectory).path()
+        case .SearchDirectory(let searchPathDirectory):
+            return NSSearchPathForDirectoriesInDomains(searchPathDirectory, .UserDomainMask, true)[0] as! String
+        default:
+            return "/"
+        }
+    }
+}
+
 public class Filer {
     private let writePath: String
     public let directory: NSSearchPathDirectory

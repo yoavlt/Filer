@@ -113,6 +113,11 @@ class FilerTests: XCTestCase {
         }
     }
     
+    func testStoreDir() {
+        XCTAssertEqual(StoreDirectory.Home.path(), NSHomeDirectory(), "home directory")
+        XCTAssertEqual(StoreDirectory.Temp.path(), NSTemporaryDirectory(), "temp directory")
+    }
+    
     func testPerformanceExample() {
         // This is an example of a performance test case.
         self.measureBlock() {
