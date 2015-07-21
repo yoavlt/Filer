@@ -118,6 +118,15 @@ class FilerTests: XCTestCase {
         XCTAssertEqual(StoreDirectory.Temp.path(), NSTemporaryDirectory(), "temp directory")
     }
     
+    func testParsePath() {
+        let (dirName1, fileName1) = Filer.parsePath("test/hoge.txt")
+        XCTAssertEqual(dirName1, "test", "dirName parse")
+        XCTAssertEqual(fileName1, "hoge.txt", "fileName parse")
+        let (dirName2, fileName2) = Filer.parsePath("test/test/hoge.txt")
+        XCTAssertEqual(dirName2, "test/test", "dirName parse")
+        XCTAssertEqual(fileName2, "hoge.txt", "fileName parse")
+    }
+    
     func testPerformanceExample() {
         // This is an example of a performance test case.
         self.measureBlock() {

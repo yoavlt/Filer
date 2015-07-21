@@ -107,7 +107,7 @@ public class Filer {
     public convenience init(fileName: String) {
         self.init(directory: StoreDirectory.Document, dirName: nil, fileName: fileName)
     }
-    
+
     public func delete() -> Bool {
         return Filer.rm(directory, path: self.fileName)
     }
@@ -174,4 +174,12 @@ public class Filer {
             return manager.contentsOfDirectoryAtPath(path, error: nil)?.map { $0 as! String }
         }
     }
+
+    public static func parsePath(string: String) -> (String, String) {
+        let comps = string.componentsSeparatedByString("/")
+        let fileName = comps.last!
+        let dirName = join("/", dropLast(comps))
+        return (dirName, fileName)
+    }
+
 }
