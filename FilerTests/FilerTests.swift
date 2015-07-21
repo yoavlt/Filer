@@ -43,6 +43,7 @@ class FilerTests: XCTestCase {
     }
 
     func testCopyFile() {
+        Filer.rm(.Document, path: "test2.txt")
         let file = Filer(fileName: "test.txt")
         FileWriter(file: file).write("test!!")
         XCTAssert(Filer.cp(.Document, srcPath: "test.txt", toPath: "test2.txt"), "copy file successfuly")
@@ -93,14 +94,15 @@ class FilerTests: XCTestCase {
     
     func testLs() {
         let sampleFileNames = ["test.txt", "test2.txt", "test3.txt"]
-        for name in sampleFileNames {
-            let file = Filer(fileName: name)
+        let sampleFiles = sampleFileNames.map { Filer(fileName: $0) }
+        for file in sampleFiles {
             FileWriter(file: file).write("test!!")
         }
         let files = Filer.ls(.Document, dir: "")!
+        println(files)
         for file in files {
-            XCTAssert(contains(sampleFileNames, value: file), "filename matches")
-            Filer.rm(.Document, path: file)
+            XCTAssert(contains(sampleFiles, value: file), "filename matches")
+            Filer.rm(StoreDirectory.Document, path: file.fileName)
         }
     }
     

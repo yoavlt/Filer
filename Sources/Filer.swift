@@ -39,20 +39,17 @@ public enum StoreDirectory {
     }
 }
 
-public class Filer {
+public class Filer : Equatable {
     private let writePath: String
     public let directory: StoreDirectory
     public let fileName: String
-    public var dirName: String? {
-        didSet {
-            if dirName != nil {
-                Filer.mkdir(directory, dirName: dirName!)
-            }
-        }
-    }
+    public var dirName: String?
 
     public var dirPath: String {
         if let dirComp = dirName {
+            if dirComp.isEmpty {
+                return writePath
+            }
             return "\(writePath)/\(dirComp)"
         } else {
             return writePath
@@ -95,7 +92,9 @@ public class Filer {
 
     public init(directory: StoreDirectory, dirName: String?, fileName: String) {
         self.directory = directory
-        self.dirName = dirName
+        if dirName != nil {
+            self.dirName = Filer.toDirName(dirName!)
+        }
         self.fileName = fileName
         self.writePath = directory.path()
     }
@@ -177,10 +176,11 @@ public class Filer {
         }
     }
 
-    public static func ls(directory: StoreDirectory, dir: String) -> [String]? {
+    public static func ls(directory: StoreDirectory, dir: String) -> [Filer]? {
         return withDir(directory) { dirPath, manager in
             let path = "\(dirPath)/\(dir)"
-            return manager.contentsOfDirectoryAtPath(path, error: nil)?.map { $0 as! String }
+            return manager.contentsOfDirectoryAtPath(path, error: nil)?.map { "\(dir)/\($0 as! String)" }
+                .map { path in Filer(directory: directory, path: path) }
         }
     }
 
@@ -191,4 +191,16 @@ public class Filer {
         return (dirName, fileName)
     }
 
+    public static func toDirName(dirName: String) -> String {
+        switch Array(dirName).last {
+        case .Some("/"):
+            return dropLast(dirName)
+        default:
+            return dirName
+        }
+    }
+}
+
+public func ==(lhs: Filer, rhs: Filer) -> Bool {
+    return lhs.path == rhs.path
 }
