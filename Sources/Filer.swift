@@ -142,6 +142,10 @@ public class Filer : Equatable {
         }
     }
 
+    public static func touch(directory: StoreDirectory, path: String) -> Bool {
+        return FileWriter(file: Filer(directory: directory, path: path)).write("")
+    }
+
     public static func rm(directory: StoreDirectory, path: String) -> Bool {
         return withDir(directory) { dirPath, manager in
             let filePath = "\(dirPath)/\(path)"

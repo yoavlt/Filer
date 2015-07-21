@@ -42,6 +42,13 @@ class FilerTests: XCTestCase {
         XCTAssertFalse(file.isExists, "test delete file")
     }
 
+    func testTouchCommand() {
+        XCTAssert(Filer.touch(.Document, path: "test.txt"), "touch file")
+        let file = Filer(fileName: "test.txt")
+        XCTAssert(file.delete(), "delete file")
+        XCTAssertFalse(file.isExists, "test delete file")
+    }
+
     func testCopyFile() {
         Filer.rm(.Document, path: "test2.txt")
         let file = Filer(fileName: "test.txt")
