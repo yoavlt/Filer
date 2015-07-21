@@ -100,6 +100,15 @@ public class Filer {
         self.writePath = directory.path()
     }
 
+    public convenience init(directory: StoreDirectory, path: String) {
+        if path.isEmpty {
+            self.init(directory: StoreDirectory.Document, dirName: nil, fileName: "")
+        } else {
+            let (dirName, fileName) = Filer.parsePath(path)
+            self.init(directory: directory, dirName: dirName, fileName: fileName)
+        }
+    }
+
     public convenience init(directory: StoreDirectory, fileName: String) {
         self.init(directory: directory, dirName: nil, fileName: fileName)
     }
