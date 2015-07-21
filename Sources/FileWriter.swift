@@ -7,6 +7,12 @@
 //
 
 import Foundation
+import UIKit
+
+public enum ImageFormat {
+    case Png
+    case Jpeg(CGFloat)
+}
 
 public class FileWriter {
     public let file: Filer
@@ -21,5 +27,17 @@ public class FileWriter {
     }
     public func writeData(data: NSData) -> Bool {
         return data.writeToFile(file.path, atomically: true)
+    }
+    public func writeImage(image: UIImage, format: ImageFormat) -> Bool {
+        let data = imageToData(image, format: format)
+        return writeData(data)
+    }
+    private func imageToData(image: UIImage, format: ImageFormat) -> NSData {
+        switch format {
+        case .Png:
+            return UIImagePNGRepresentation(image)
+        case .Jpeg(let quality):
+            return UIImageJPEGRepresentation(image, quality)
+        }
     }
 }

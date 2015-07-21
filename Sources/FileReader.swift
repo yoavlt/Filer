@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 public class FileReader {
     public let file: Filer
@@ -23,5 +24,8 @@ public class FileReader {
         return Filer.withDir(file.directory) { _, manager in
             return manager.contentsAtPath(self.file.path)
         }
+    }
+    public func readImage() -> UIImage? {
+        return UIImage(contentsOfFile: file.path)
     }
 }

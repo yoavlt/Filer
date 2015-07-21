@@ -122,11 +122,41 @@ class FilerTests: XCTestCase {
         }
     }
     
+    func testPngWrite() {
+        let file = Filer(fileName: "test.png")
+        let image = UIImage(named: "heart")!
+        XCTAssert(FileWriter(file: file).writeImage(image, format: .Png), "write png file")
+        XCTAssert(Filer.rm(.Document, path: "test.png"), "delete png file")
+    }
+    
+    func testJpgWrite() {
+        let file = Filer(fileName: "test.jpg")
+        let image = UIImage(named: "heart")!
+        XCTAssert(FileWriter(file: file).writeImage(image, format: .Jpeg(0.8)), "write jpg file")
+        XCTAssert(Filer.rm(.Document, path: "test.jpg"), "delte jpg file")
+    }
+    
+    func testPngRead() {
+        let file = Filer(fileName: "test.png")
+        let image = UIImage(named: "heart")!
+        XCTAssert(FileWriter(file: file).writeImage(image, format: .Png), "write png file")
+        XCTAssertNotNil(FileReader(file: file).readImage(), "read png data")
+        XCTAssert(Filer.rm(.Document, path: "test.png"), "delete png file")
+    }
+
+    func testJpegRead() {
+        let file = Filer(fileName: "test.jpg")
+        let image = UIImage(named: "heart")!
+        XCTAssert(FileWriter(file: file).writeImage(image, format: .Jpeg(0.2)), "write jpeg file")
+        XCTAssertNotNil(FileReader(file: file).readImage(), "read jpeg data")
+        XCTAssert(Filer.rm(.Document, path: "test.jpg"), "delte jpg file")
+    }
+
     func testStoreDir() {
         XCTAssertEqual(StoreDirectory.Home.path(), NSHomeDirectory(), "home directory")
         XCTAssertEqual(StoreDirectory.Temp.path(), NSTemporaryDirectory(), "temp directory")
     }
-    
+
     func testParsePath() {
         let (dirName1, fileName1) = Filer.parsePath("test/hoge.txt")
         XCTAssertEqual(dirName1, "test", "dirName parse")
