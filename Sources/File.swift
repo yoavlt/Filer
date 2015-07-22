@@ -99,7 +99,7 @@ public class File : Printable, Equatable {
     public init(directory: StoreDirectory, dirName: String?, fileName: String) {
         self.directory = directory
         if dirName != nil {
-            self.dirName = Filer.toDirName(dirName!)
+            self.dirName = File.toDirName(dirName!)
         }
         self.fileName = fileName
         self.writePath = directory.path()
@@ -109,7 +109,7 @@ public class File : Printable, Equatable {
         if path.isEmpty {
             self.init(directory: StoreDirectory.Document, dirName: nil, fileName: "")
         } else {
-            let (dirName, fileName) = Filer.parsePath(path)
+            let (dirName, fileName) = File.parsePath(path)
             self.init(directory: directory, dirName: dirName, fileName: fileName)
         }
     }
@@ -158,6 +158,26 @@ public class File : Printable, Equatable {
             return FileWriter(file: self).writeData(data)
         }
         return FileWriter(file: self).appendData(data)
+    }
+    
+    // MARK: static methods
+    public static func parsePath(string: String) -> (String?, String) {
+        let comps = string.componentsSeparatedByString("/")
+        let fileName = comps.last!
+        let dirName = join("/", dropLast(comps))
+        if dirName.isEmpty {
+            return (nil, fileName)
+        }
+        return (dirName, fileName)
+    }
+
+    public static func toDirName(dirName: String) -> String {
+        switch Array(dirName).last {
+        case .Some("/"):
+            return dropLast(dirName)
+        default:
+            return dirName
+        }
     }
 }
 

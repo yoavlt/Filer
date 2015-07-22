@@ -157,11 +157,11 @@ class FilerTests: XCTestCase {
     }
 
     func testParsePath() {
-        let (dirName1, fileName1) = Filer.parsePath("test/hoge.txt")
-        XCTAssertEqual(dirName1, "test", "dirName parse")
+        let (dirName1, fileName1) = File.parsePath("test/hoge.txt")
+        XCTAssertEqual(dirName1!, "test", "dirName parse")
         XCTAssertEqual(fileName1, "hoge.txt", "fileName parse")
-        let (dirName2, fileName2) = Filer.parsePath("test/test/hoge.txt")
-        XCTAssertEqual(dirName2, "test/test", "dirName parse")
+        let (dirName2, fileName2) = File.parsePath("test/test/hoge.txt")
+        XCTAssertEqual(dirName2!, "test/test", "dirName parse")
         XCTAssertEqual(fileName2, "hoge.txt", "fileName parse")
     }
 

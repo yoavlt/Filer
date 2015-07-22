@@ -72,20 +72,4 @@ public class Filer {
     public static func cat(directory: StoreDirectory, path: String) -> String {
         return File(directory: directory, path: path).read()
     }
-
-    public static func parsePath(string: String) -> (String, String) {
-        let comps = string.componentsSeparatedByString("/")
-        let fileName = comps.last!
-        let dirName = join("/", dropLast(comps))
-        return (dirName, fileName)
-    }
-
-    public static func toDirName(dirName: String) -> String {
-        switch Array(dirName).last {
-        case .Some("/"):
-            return dropLast(dirName)
-        default:
-            return dirName
-        }
-    }
 }
