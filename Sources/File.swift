@@ -147,10 +147,16 @@ public class File : Printable, Equatable {
     }
 
     public func append(body: String) -> Bool {
+        if self.isExists == false {
+            return FileWriter(file: self).write(body)
+        }
         return FileWriter(file: self).append(body)
     }
 
     public func appendData(data: NSData) -> Bool {
+        if self.isExists == false {
+            return FileWriter(file: self).writeData(data)
+        }
         return FileWriter(file: self).appendData(data)
     }
 }
@@ -167,4 +173,14 @@ public func ->>(lhs: String, rhs: File) -> Bool {
 
 public func ->>(lhs: NSData, rhs: File) -> Bool {
     return rhs.appendData(lhs)
+}
+
+infix operator --> { associativity left }
+
+public func -->(lhs: String, rhs: File) -> Bool {
+    return rhs.write(lhs)
+}
+
+public func -->(lhs: NSData, rhs: File) -> Bool {
+    return rhs.writeData(lhs)
 }
