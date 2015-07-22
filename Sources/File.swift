@@ -158,3 +158,13 @@ public class File : Printable, Equatable {
 public func ==(lhs: File, rhs: File) -> Bool {
     return lhs.path == rhs.path
 }
+
+infix operator ->> { associativity left }
+
+public func ->>(lhs: String, rhs: File) -> Bool {
+    return rhs.append(lhs)
+}
+
+public func ->>(lhs: NSData, rhs: File) -> Bool {
+    return rhs.appendData(lhs)
+}

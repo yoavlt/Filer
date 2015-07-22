@@ -69,6 +69,10 @@ public class Filer {
         }
     }
 
+    public static func cat(directory: StoreDirectory, path: String) -> String {
+        return File(directory: directory, path: path).read()
+    }
+
     public static func parsePath(string: String) -> (String, String) {
         let comps = string.componentsSeparatedByString("/")
         let fileName = comps.last!

@@ -181,6 +181,14 @@ class FilerTests: XCTestCase {
         XCTAssert(file.delete(), "delete file")
     }
 
+    func testAppendOperator() {
+        let file = File(fileName: "test.txt")
+        file.write("te")
+        XCTAssert("st" ->> file, "write oprator")
+        XCTAssertEqual(file.read(), "test", "read string")
+        XCTAssert(file.delete(), "delete file")
+    }
+
     func testPerformanceExample() {
         // This is an example of a performance test case.
         self.measureBlock() {
