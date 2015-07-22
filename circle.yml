@@ -1,0 +1,10 @@
+machine:
+    xcode:
+        version: "6.3.1"
+test:
+    override:
+        - sudo chown :wheel /Library/Developer/CoreSimulator/Profiles/Runtimes/iOS\ *.simruntime/Contents/Resources/RuntimeRoot/usr/lib/dyld_sim
+        - xcodebuild test -project Filer.xcodeproj -scheme 'Filer' -configuration Release -sdk iphonesimulator
+        - swiftcov generate --output coverage xcodebuild test -project Filer.xcodeproj -scheme 'Filer' -configuration Release -sdk iphonesimulator
+    post:
+        - bash <(curl -s https://codecov.io/bash)
