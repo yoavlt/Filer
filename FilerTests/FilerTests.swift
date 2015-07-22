@@ -164,7 +164,16 @@ class FilerTests: XCTestCase {
         XCTAssertEqual(dirName2, "test/test", "dirName parse")
         XCTAssertEqual(fileName2, "hoge.txt", "fileName parse")
     }
-    
+
+    func testAppendFile() {
+        let file = Filer(fileName: "test.txt")
+        let writer = FileWriter(file: file)
+        writer.write("te")
+        writer.appendString("st")
+        XCTAssertEqual(FileReader(file: file).read(), "test")
+        XCTAssert(Filer.rm(.Document, path: "test.txt"), "delete text file")
+    }
+
     func testPerformanceExample() {
         // This is an example of a performance test case.
         self.measureBlock() {

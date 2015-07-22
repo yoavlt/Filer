@@ -19,19 +19,51 @@ public class FileWriter {
     public init(file: Filer) {
         self.file = file
     }
+
     public func write(body: String) -> Bool {
         return writeString(body)
     }
+
+    public func append(body: String) -> Bool {
+        return appendString(body)
+    }
+
     public func writeString(body: String) -> Bool {
         return body.writeToFile(file.path, atomically: true, encoding: NSUTF8StringEncoding, error: nil)
     }
+
+    public func appendString(body: String) -> Bool {
+        if let data = body.dataUsingEncoding(NSUTF8StringEncoding) {
+            return appendData(data)
+        }
+        return false
+    }
+
     public func writeData(data: NSData) -> Bool {
         return data.writeToFile(file.path, atomically: true)
     }
+
+    public func appendData(data: NSData) -> Bool {
+        return withHandler(file.path) { handle in
+            handle.seekToEndOfFile()
+            handle.writeData(data)
+        }
+    }
+
+    public func withHandler(path: String, f: (NSFileHandle) -> ()) -> Bool {
+        if let handler = NSFileHandle(forWritingAtPath: path) {
+            f(handler)
+            handler.closeFile()
+            return true
+        }
+        return false
+    }
+
     public func writeImage(image: UIImage, format: ImageFormat) -> Bool {
         let data = imageToData(image, format: format)
         return writeData(data)
     }
+
     private func imageToData(image: UIImage, format: ImageFormat) -> NSData {
         switch format {
         case .Png:
