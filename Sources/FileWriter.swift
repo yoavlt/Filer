@@ -15,8 +15,8 @@ public enum ImageFormat {
 }
 
 public class FileWriter {
-    public let file: Filer
-    public init(file: Filer) {
+    public let file: File
+    public init(file: File) {
         self.file = file
     }
 

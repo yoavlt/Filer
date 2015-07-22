@@ -16,6 +16,7 @@
 		D919FB2E1B533CAE00C58B0E /* Filer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D919FB2D1B533CAE00C58B0E /* Filer.swift */; };
 		D919FB301B533CBB00C58B0E /* FileWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D919FB2F1B533CBB00C58B0E /* FileWriter.swift */; };
 		D919FB321B533CC900C58B0E /* FileReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D919FB311B533CC900C58B0E /* FileReader.swift */; };
+		D924C37F1B5F2B7C001D0303 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = D924C37E1B5F2B7C001D0303 /* File.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +43,7 @@
 		D919FB2D1B533CAE00C58B0E /* Filer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Filer.swift; sourceTree = "<group>"; };
 		D919FB2F1B533CBB00C58B0E /* FileWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileWriter.swift; sourceTree = "<group>"; };
 		D919FB311B533CC900C58B0E /* FileReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileReader.swift; sourceTree = "<group>"; };
+		D924C37E1B5F2B7C001D0303 /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +127,7 @@
 				D919FB2D1B533CAE00C58B0E /* Filer.swift */,
 				D919FB2F1B533CBB00C58B0E /* FileWriter.swift */,
 				D919FB311B533CC900C58B0E /* FileReader.swift */,
+				D924C37E1B5F2B7C001D0303 /* File.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -230,6 +233,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D919FB301B533CBB00C58B0E /* FileWriter.swift in Sources */,
+				D924C37F1B5F2B7C001D0303 /* File.swift in Sources */,
 				D919FB321B533CC900C58B0E /* FileReader.swift in Sources */,
 				D919FB0F1B533C1100C58B0E /* ViewController.swift in Sources */,
 				D919FB0D1B533C1100C58B0E /* AppDelegate.swift in Sources */,
@@ -431,6 +435,7 @@
 				D919FB281B533C1100C58B0E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D919FB291B533C1100C58B0E /* Build configuration list for PBXNativeTarget "FilerTests" */ = {
 			isa = XCConfigurationList;
@@ -439,6 +444,7 @@
 				D919FB2B1B533C1100C58B0E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

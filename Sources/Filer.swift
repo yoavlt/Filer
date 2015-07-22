@@ -8,132 +8,7 @@
 
 import Foundation
 
-public enum StoreDirectory {
-    case Home
-    case Temp
-    case Document
-    case Cache
-    case Inbox
-    case Library
-    case SearchDirectory(NSSearchPathDirectory)
-
-    public func path() -> String {
-        switch self {
-        case .Home:
-            return NSHomeDirectory()
-        case .Temp:
-            return NSTemporaryDirectory()
-        case .Document:
-            return StoreDirectory.SearchDirectory(.DocumentDirectory).path()
-        case .Cache:
-            return StoreDirectory.SearchDirectory(.CachesDirectory).path()
-        case .Library:
-            return StoreDirectory.SearchDirectory(.LibraryDirectory).path()
-        case .Inbox:
-            return "\(StoreDirectory.Library.path())/Inbox"
-        case .SearchDirectory(let searchPathDirectory):
-            return NSSearchPathForDirectoriesInDomains(searchPathDirectory, .UserDomainMask, true)[0] as! String
-        default:
-            return "/"
-        }
-    }
-}
-
-public class Filer : Printable, Equatable {
-    private let writePath: String
-    public let directory: StoreDirectory
-    public let fileName: String
-    public var dirName: String?
-
-    public var dirPath: String {
-        if let dirComp = dirName {
-            if dirComp.isEmpty {
-                return writePath
-            }
-            return "\(writePath)/\(dirComp)"
-        } else {
-            return writePath
-        }
-    }
-
-    public var path: String {
-        get {
-            return "\(dirPath)/\(fileName)"
-        }
-    }
-
-    public var relativePath: String {
-        get {
-            if let dir = dirName {
-                return "\(dir)/\(fileName)"
-            } else {
-                return fileName
-            }
-        }
-    }
-
-    public var isExists: Bool {
-        get {
-            return Filer.exists(directory, path: relativePath)
-        }
-    }
-
-    public var url: NSURL {
-        get {
-            return NSURL(fileURLWithPath: self.path)!
-        }
-    }
-    
-    public var ext: String? {
-        get {
-            return split(fileName, isSeparator: { $0 == "." }).last
-        }
-    }
-
-    public var description: String {
-        get {
-            return "Filer \(self.path)"
-        }
-    }
-
-    public init(directory: StoreDirectory, dirName: String?, fileName: String) {
-        self.directory = directory
-        if dirName != nil {
-            self.dirName = Filer.toDirName(dirName!)
-        }
-        self.fileName = fileName
-        self.writePath = directory.path()
-    }
-
-    public convenience init(directory: StoreDirectory, path: String) {
-        if path.isEmpty {
-            self.init(directory: StoreDirectory.Document, dirName: nil, fileName: "")
-        } else {
-            let (dirName, fileName) = Filer.parsePath(path)
-            self.init(directory: directory, dirName: dirName, fileName: fileName)
-        }
-    }
-
-    public convenience init(directory: StoreDirectory, fileName: String) {
-        self.init(directory: directory, dirName: nil, fileName: fileName)
-    }
-
-    public convenience init(fileName: String) {
-        self.init(directory: StoreDirectory.Document, dirName: nil, fileName: fileName)
-    }
-
-    public func delete() -> Bool {
-        return Filer.rm(directory, path: self.fileName)
-    }
-    
-    public func copyTo(toPath: String) -> Bool {
-        return Filer.cp(directory, srcPath: relativePath, toPath: toPath)
-    }
-    
-    public func moveTo(toPath: String) -> Bool {
-        return Filer.mv(directory, srcPath: relativePath, toPath: toPath)
-    }
-    
+public class Filer {
     // MARK: static methods
     public static func withDir <T> (directory: StoreDirectory, f: (String, NSFileManager) -> T) -> T {
         let writePath = directory.path()
@@ -149,7 +24,7 @@ public class Filer : Printable, Equatable {
     }
 
     public static func touch(directory: StoreDirectory, path: String) -> Bool {
-        return FileWriter(file: Filer(directory: directory, path: path)).write("")
+        return FileWriter(file: File(directory: directory, path: path)).write("")
     }
 
     public static func rm(directory: StoreDirectory, path: String) -> Bool {
@@ -186,11 +61,11 @@ public class Filer : Printable, Equatable {
         }
     }
 
-    public static func ls(directory: StoreDirectory, dir: String) -> [Filer]? {
+    public static func ls(directory: StoreDirectory, dir: String) -> [File]? {
         return withDir(directory) { dirPath, manager in
             let path = "\(dirPath)/\(dir)"
             return manager.contentsOfDirectoryAtPath(path, error: nil)?.map { "\(dir)/\($0 as! String)" }
-                .map { path in Filer(directory: directory, path: path) }
+                .map { path in File(directory: directory, path: path) }
         }
     }
 
@@ -209,8 +84,4 @@ public class Filer : Printable, Equatable {
             return dirName
         }
     }
-}
-
-public func ==(lhs: Filer, rhs: Filer) -> Bool {
-    return lhs.path == rhs.path
 }

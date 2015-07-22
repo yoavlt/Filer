@@ -10,8 +10,8 @@ import Foundation
 import UIKit
 
 public class FileReader {
-    public let file: Filer
-    public init(file: Filer) {
+    public let file: File
+    public init(file: File) {
         self.file = file
     }
     public func read() -> String {

@@ -14,7 +14,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view, typically from a nib.
-        let file = Filer(fileName: "test.png")
+        let file = File(fileName: "test.png")
         let image = UIImage(named: "heart")!
         FileWriter(file: file).writeImage(image, format: .Png)
         let readImage = FileReader(file: file).readImage()
