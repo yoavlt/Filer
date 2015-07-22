@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 public enum StoreDirectory {
     case Home
@@ -138,12 +139,24 @@ public class File : Printable, Equatable {
         return FileReader(file: self).read()
     }
 
+    public func readData() -> NSData? {
+        return FileReader(file: self).readData()
+    }
+
+    public func readImage() -> UIImage? {
+        return FileReader(file: self).readImage()
+    }
+
     public func write(body: String) -> Bool {
         return FileWriter(file: self).write(body)
     }
 
     public func writeData(data: NSData) -> Bool {
         return FileWriter(file: self).writeData(data)
+    }
+    
+    public func writeImage(image: UIImage, format: ImageFormat) -> Bool {
+        return FileWriter(file: self).writeImage(image, format: format)
     }
 
     public func append(body: String) -> Bool {

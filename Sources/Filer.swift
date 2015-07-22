@@ -65,7 +65,7 @@ public class Filer {
         return test(directory, path: path)
     }
 
-    public static func ls(directory: StoreDirectory, dir: String) -> [File]? {
+    public static func ls(directory: StoreDirectory, dir: String = "") -> [File]? {
         return withDir(directory) { dirPath, manager in
             let path = "\(dirPath)/\(dir)"
             return manager.contentsOfDirectoryAtPath(path, error: nil)?.map { "\(dir)/\($0 as! String)" }
