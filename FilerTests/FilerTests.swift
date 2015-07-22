@@ -106,7 +106,6 @@ class FilerTests: XCTestCase {
             FileWriter(file: file).write("test!!")
         }
         let files = Filer.ls(.Document, dir: "")!
-        println(files)
         for file in files {
             XCTAssert(contains(sampleFiles, value: file), "filename matches")
             Filer.rm(StoreDirectory.Document, path: file.fileName)

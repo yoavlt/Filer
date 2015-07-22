@@ -39,7 +39,7 @@ public enum StoreDirectory {
     }
 }
 
-public class Filer : Equatable {
+public class Filer : Printable, Equatable {
     private let writePath: String
     public let directory: StoreDirectory
     public let fileName: String
@@ -90,6 +90,12 @@ public class Filer : Equatable {
         }
     }
 
+    public var description: String {
+        get {
+            return "Filer \(self.path)"
+        }
+    }
+
     public init(directory: StoreDirectory, dirName: String?, fileName: String) {
         self.directory = directory
         if dirName != nil {
@@ -127,7 +133,7 @@ public class Filer : Equatable {
     public func moveTo(toPath: String) -> Bool {
         return Filer.mv(directory, srcPath: relativePath, toPath: toPath)
     }
-
+    
     // MARK: static methods
     public static func withDir <T> (directory: StoreDirectory, f: (String, NSFileManager) -> T) -> T {
         let writePath = directory.path()
