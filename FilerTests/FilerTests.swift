@@ -213,6 +213,43 @@ class FilerTests: XCTestCase {
         XCTAssert(file.delete(), "delete file")
         XCTAssert(copyToFile.delete(), "delete file")
     }
+    
+    func testNestedCp() {
+        XCTAssert(Filer.touch(.Document, path: "test.txt"), "touch file")
+        XCTAssert(Filer.mkdir(.Document, dirName: "hoge"), "create directory")
+        XCTAssert(Filer.cp(.Document, srcPath: "test.txt", toPath: "hoge/test.txt"), "copy successfuly")
+        XCTAssert(Filer.exists(.Document, path: "hoge/test.txt"), "exists files")
+        XCTAssert(Filer.rm(.Document, path: "hoge/test.txt"), "delete files")
+        XCTAssert(Filer.rm(.Document, path: "test.txt"), "delete origin file")
+        XCTAssert(Filer.rmdir(.Document, dirName: "hoge"))
+
+        XCTAssert(Filer.mkdir(.Document, dirName: "hoge"))
+        XCTAssert(Filer.touch(.Document, path: "hoge/test.txt"))
+        XCTAssert(Filer.mkdir(.Document, dirName: "fuga"))
+        XCTAssert(Filer.cp(.Document, srcPath: "hoge/test.txt", toPath: "fuga/test.txt"))
+        XCTAssert(Filer.exists(.Document, path: "fuga/test.txt"), "copy successfuly")
+        XCTAssert(Filer.rmdir(.Document, dirName: "hoge"))
+        XCTAssert(Filer.rmdir(.Document, dirName: "fuga"))
+    }
+
+    func testNestedMv() {
+        XCTAssert(Filer.touch(.Document, path: "test.txt"), "touch file")
+        XCTAssert(Filer.mkdir(.Document, dirName: "hoge"), "create directory")
+        XCTAssert(Filer.mv(.Document, srcPath: "test.txt", toPath: "hoge/test.txt"), "copy successfuly")
+        XCTAssertFalse(Filer.exists(.Document, path: "test.txt"), "moved file")
+        XCTAssert(Filer.exists(.Document, path: "hoge/test.txt"), "exists files")
+        XCTAssert(Filer.rm(.Document, path: "hoge/test.txt"), "delete files")
+        XCTAssert(Filer.rmdir(.Document, dirName: "hoge"))
+
+        XCTAssert(Filer.mkdir(.Document, dirName: "hoge"))
+        XCTAssert(Filer.touch(.Document, path: "hoge/test.txt"))
+        XCTAssert(Filer.mkdir(.Document, dirName: "fuga"))
+        XCTAssert(Filer.mv(.Document, srcPath: "hoge/test.txt", toPath: "fuga/test.txt"))
+        XCTAssertFalse(Filer.exists(.Document, path: "hoge/test.txt"), "moved successfuly")
+        XCTAssert(Filer.exists(.Document, path: "fuga/test.txt"), "copy successfuly")
+        XCTAssert(Filer.rmdir(.Document, dirName: "hoge"))
+        XCTAssert(Filer.rmdir(.Document, dirName: "fuga"))
+    }
 
     func testPerformanceExample() {
         // This is an example of a performance test case.
