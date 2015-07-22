@@ -92,7 +92,7 @@ public class File : Printable, Equatable {
 
     public var description: String {
         get {
-            return "Filer \(self.path)"
+            return "File \(self.path)"
         }
     }
 
@@ -134,6 +134,25 @@ public class File : Printable, Equatable {
         return Filer.mv(directory, srcPath: relativePath, toPath: toPath)
     }
     
+    public func read() -> String {
+        return FileReader(file: self).read()
+    }
+
+    public func write(body: String) -> Bool {
+        return FileWriter(file: self).write(body)
+    }
+
+    public func writeData(data: NSData) -> Bool {
+        return FileWriter(file: self).writeData(data)
+    }
+
+    public func append(body: String) -> Bool {
+        return FileWriter(file: self).append(body)
+    }
+
+    public func appendData(data: NSData) -> Bool {
+        return FileWriter(file: self).appendData(data)
+    }
 }
 
 public func ==(lhs: File, rhs: File) -> Bool {

@@ -174,6 +174,13 @@ class FilerTests: XCTestCase {
         XCTAssert(Filer.rm(.Document, path: "test.txt"), "delete text file")
     }
 
+    func testReadWriteMethod() {
+        let file = File(fileName: "test.txt")
+        XCTAssert(file.write("test"), "write string")
+        XCTAssertEqual(file.read(), "test", "read string")
+        XCTAssert(file.delete(), "delete file")
+    }
+
     func testPerformanceExample() {
         // This is an example of a performance test case.
         self.measureBlock() {
