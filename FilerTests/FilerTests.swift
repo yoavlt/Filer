@@ -203,11 +203,15 @@ class FilerTests: XCTestCase {
         XCTAssert(file.delete(), "delete file")
     }
 
-    func testCatOperator() {
+    func testCat() {
         let file = File(fileName: "test.txt")
         XCTAssert("test" --> file, "write oprator")
         XCTAssertEqual(Filer.cat(.Document, path: "test.txt"), "test", "read string")
+        let copyToFile = File(fileName: "test2.txt")
+        XCTAssert(Filer.cat(.Document, path: "test.txt") --> copyToFile, "cat and write")
+        XCTAssertEqual(copyToFile.read(), "test", "copy correctly")
         XCTAssert(file.delete(), "delete file")
+        XCTAssert(copyToFile.delete(), "delete file")
     }
 
     func testPerformanceExample() {
