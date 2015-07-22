@@ -1,11 +1,23 @@
 Filer: Simple file handler written in Swift
 ======================================
 
+[![Platform](http://img.shields.io/badge/platform-ios-blue.svg?style=flat
+)](https://developer.apple.com/iphone/index.action)
+[![Language](http://img.shields.io/badge/language-swift-brightgreen.svg?style=flat
+)](https://developer.apple.com/swift)
+[![License](http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat
+)](http://mit-license.org)
+
 ## Features
 - Super easily handle file(copy, move, delete, test, ls...)
 - Supports write/read Text and NSData
 - Supports write/read UIImage(png, jpg)
 
+## Installation
+[CocoaPods](http://cocoapods.org) is a library manager for iOS projects. To install using CocoaPods:
+```
+pod 'Filer'
+```
 ## Usage
 
 ### Supported commands
