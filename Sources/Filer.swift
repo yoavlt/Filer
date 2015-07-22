@@ -54,11 +54,15 @@ public class Filer {
         }
     }
 
-    public static func exists(directory: StoreDirectory, path: String) -> Bool {
+    public static func test(directory: StoreDirectory, path: String) -> Bool {
         return withDir(directory) { dirPath, manager in
             let path = "\(dirPath)/\(path)"
             return manager.fileExistsAtPath(path)
         }
+    }
+
+    public static func exists(directory: StoreDirectory, path: String) -> Bool {
+        return test(directory, path: path)
     }
 
     public static func ls(directory: StoreDirectory, dir: String) -> [File]? {
