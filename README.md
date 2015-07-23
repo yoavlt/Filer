@@ -28,6 +28,7 @@ pod 'Filer'
 - `mv`
 - `cp`
 - `exists` / `test`
+- `cat`
 
 #### mkdir
 ```swift
@@ -63,6 +64,12 @@ File(.Document, path: "hoge.txt").write("Awesome!")
 Filer.cp(.Document, srcPath: "hoge.txt", toPath: "fuga.txt")
 Filer.exists(.Document, path: "hoge.txt") // true
 Filer.exists(.Document, path: "fuga.txt") // true
+```
+
+### cat
+```swift
+File(.Document, path: "hoge.txt").write("Awesome!")
+Filer.cat(.Document, path: "hoge.txt") // "Awesome!"
 ```
 
 ### write/read
