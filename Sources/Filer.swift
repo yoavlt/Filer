@@ -76,4 +76,14 @@ public class Filer {
     public static func cat(directory: StoreDirectory, path: String) -> String {
         return File(directory: directory, path: path).read()
     }
+
+    public static func du(directory: StoreDirectory, path: String) -> UInt64 {
+        return withDir(directory) { dirPath, manager in
+            let path = "\(dirPath)/\(path)"
+            if let item: NSDictionary = manager.attributesOfItemAtPath(path, error: nil) {
+                return item.fileSize()
+            }
+            return 0
+        }
+    }
 }

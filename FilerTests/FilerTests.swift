@@ -111,7 +111,14 @@ class FilerTests: XCTestCase {
             Filer.rm(StoreDirectory.Document, path: file.fileName)
         }
     }
-    
+
+    func testDu() {
+        let file = File(fileName: "test.txt")
+        "test!" --> file
+        XCTAssert(Filer.du(.Document, path: file.relativePath) > 0, "file size greater than zero")
+        XCTAssert(Filer.rm(.Document, path: "test.txt"), "delete png file")
+    }
+
     func testExt() {
         let sampleFileNames = ["test.txt", "test.bin", "test.png"]
         let correctExts = ["txt", "bin", "png"]

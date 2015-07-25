@@ -29,6 +29,7 @@ pod 'Filer'
 - `cp`
 - `exists` / `test`
 - `cat`
+- `du`
 
 #### mkdir
 ```swift
@@ -70,6 +71,11 @@ Filer.exists(.Document, path: "fuga.txt") // true
 ```swift
 File(.Document, path: "hoge.txt").write("Awesome!")
 Filer.cat(.Document, path: "hoge.txt") // "Awesome!"
+```
+
+### du
+``` swift
+File.du(.Document, path: "hoge.txt") // file size(bytes)
 ```
 
 ### write/read
