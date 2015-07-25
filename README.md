@@ -75,7 +75,7 @@ Filer.cat(.Document, path: "hoge.txt") // "Awesome!"
 
 ### du
 ``` swift
-File.du(.Document, path: "hoge.txt") // file size(bytes)
+Filer.du(.Document, path: "hoge.txt") // file size(bytes)
 ```
 
 ### write/read
