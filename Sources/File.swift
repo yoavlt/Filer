@@ -206,12 +206,15 @@ public class File : Printable, Equatable {
 
     public static func parsePath(absoluteString: String) -> (StoreDirectory, String?, String)? {
         let comps = absoluteString.componentsSeparatedByString(NSHomeDirectory())
-        let names = Array(StoreDirectory.paths().keys).reverse()
+        let names = Array(StoreDirectory.paths().keys)
         if let homeRelativePath = comps.last {
+            println("homeRelativePath \(homeRelativePath)")
             let firstMathes = names.filter { homeRelativePath.rangeOfString($0) != nil }.first
             if let name = firstMathes {
+                println("firstMatches: \(name)")
                 if let dir = StoreDirectory.from(name) {
                     let path = homeRelativePath.stringByReplacingOccurrencesOfString(name, withString: "", options: .LiteralSearch, range: nil)
+                    println("path \(path)")
                     let (dirName, fileName) = parsePath(path)
                     return (dir, dirName, fileName)
                 }

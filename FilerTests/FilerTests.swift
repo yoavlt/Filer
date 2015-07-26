@@ -258,14 +258,13 @@ class FilerTests: XCTestCase {
         XCTAssert(Filer.rmdir(.Document, dirName: "fuga"))
     }
     
-    func parseUrl() {
+    func testParseUrl() {
         Filer.mkdir(.Document, dirName: "hoge")
         let file = File(directory: .Document, path: "hoge/fuga.txt")
         let (dir, dirName, fileName) = File.parsePath(file.url.absoluteString!)!
         XCTAssertEqual(dir.path(), StoreDirectory.Document.path(), "parse StoreDirectory")
-        XCTAssertEqual(dirName!, "hoge", "parse dirName")
+        XCTAssertEqual(dirName!, "/hoge", "parse dirName")
         XCTAssertEqual(fileName, "fuga.txt", "parse fileName")
-        XCTAssert(Filer.rm(.Document, path: "hoge/fuga.txt"))
         XCTAssert(Filer.rmdir(.Document, dirName: "hoge"))
     }
 
