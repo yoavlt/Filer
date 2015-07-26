@@ -38,6 +38,21 @@ public enum StoreDirectory {
             return "/"
         }
     }
+
+    static public func from(string: String) -> StoreDirectory? {
+        return StoreDirectory.paths()[string]
+    }
+    
+    static public func paths() -> [String : StoreDirectory] {
+        return [
+            "/" : .Home,
+            "/tmp": .Temp,
+            "/Documents": .Document,
+            "/Caches": .Cache,
+            "/Library": .Library,
+            "/Library/Inbox": .Inbox
+        ]
+    }
 }
 
 public class File : Printable, Equatable {
@@ -123,6 +138,11 @@ public class File : Printable, Equatable {
         self.init(directory: StoreDirectory.Document, dirName: nil, fileName: fileName)
     }
 
+    public convenience init(url: NSURL) {
+        let (dir, dirName, fileName) = File.parsePath(url.absoluteString!)!
+        self.init(directory: dir, dirName: dirName, fileName: fileName)
+    }
+
     public func delete() -> Bool {
         return Filer.rm(directory, path: self.fileName)
     }
@@ -182,6 +202,22 @@ public class File : Printable, Equatable {
             return (nil, fileName)
         }
         return (dirName, fileName)
+    }
+
+    public static func parsePath(absoluteString: String) -> (StoreDirectory, String?, String)? {
+        let comps = absoluteString.componentsSeparatedByString(NSHomeDirectory())
+        let names = Array(StoreDirectory.paths().keys).reverse()
+        if let homeRelativePath = comps.last {
+            let firstMathes = names.filter { homeRelativePath.rangeOfString($0) != nil }.first
+            if let name = firstMathes {
+                if let dir = StoreDirectory.from(name) {
+                    let path = homeRelativePath.stringByReplacingOccurrencesOfString(name, withString: "", options: .LiteralSearch, range: nil)
+                    let (dirName, fileName) = parsePath(path)
+                    return (dir, dirName, fileName)
+                }
+            }
+        }
+        return nil
     }
 
     public static func toDirName(dirName: String) -> String {
