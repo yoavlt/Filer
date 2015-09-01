@@ -8,6 +8,8 @@ Filer: Simple file handler written in Swift
 [![License](http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat
 )](http://mit-license.org)
 
+![Filer](https://github.com/yoavlt/Filer/blob/master/filer.png?raw=true)
+
 ## Features
 - Super easily handle file(copy, move, delete, test, ls...)
 - Supports write/read Text and NSData
