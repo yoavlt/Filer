@@ -29,7 +29,12 @@ public class FileWriter {
     }
 
     public func writeString(body: String) -> Bool {
-        return body.writeToFile(file.path, atomically: true, encoding: NSUTF8StringEncoding, error: nil)
+        do {
+            try body.writeToFile(file.path, atomically: true, encoding: NSUTF8StringEncoding)
+            return true
+        } catch _ {
+            return false
+        }
     }
 
     public func appendString(body: String) -> Bool {
@@ -67,9 +72,9 @@ public class FileWriter {
     private func imageToData(image: UIImage, format: ImageFormat) -> NSData {
         switch format {
         case .Png:
-            return UIImagePNGRepresentation(image)
+            return UIImagePNGRepresentation(image)!
         case .Jpeg(let quality):
-            return UIImageJPEGRepresentation(image, quality)
+            return UIImageJPEGRepresentation(image, quality)!
         }
     }
 }

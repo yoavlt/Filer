@@ -19,7 +19,12 @@ public class Filer {
     public static func mkdir(directory: StoreDirectory, dirName: String) -> Bool {
         return withDir(directory) { path, manager in
             let path = "\(path)/\(dirName)"
-            return manager.createDirectoryAtPath(path, withIntermediateDirectories: true, attributes: nil, error: nil)
+            do {
+                try manager.createDirectoryAtPath(path, withIntermediateDirectories: true, attributes: nil)
+                return true
+            } catch _ {
+                return false
+            }
         }
     }
 
@@ -30,7 +35,12 @@ public class Filer {
     public static func rm(directory: StoreDirectory, path: String) -> Bool {
         return withDir(directory) { dirPath, manager in
             let filePath = "\(dirPath)/\(path)"
-            return manager.removeItemAtPath(filePath, error: nil)
+            do {
+                try manager.removeItemAtPath(filePath)
+                return true
+            } catch _ {
+                return false
+            }
         }
     }
 
@@ -38,7 +48,12 @@ public class Filer {
         return withDir(directory) { path, manager in
             let from = "\(path)/\(srcPath)"
             let to = "\(path)/\(toPath)"
-            return manager.moveItemAtPath(from, toPath: to, error: nil)
+            do {
+                try manager.moveItemAtPath(from, toPath: to)
+                return true
+            } catch _ {
+                return false
+            }
         }
     }
 
@@ -50,7 +65,12 @@ public class Filer {
         return withDir(directory) { path, manager in
             let from = "\(path)/\(srcPath)"
             let to = "\(path)/\(toPath)"
-            return manager.copyItemAtPath(from, toPath: to, error: nil)
+            do {
+                try manager.copyItemAtPath(from, toPath: to)
+                return true
+            } catch _ {
+                return false
+            }
         }
     }
 
@@ -68,7 +88,7 @@ public class Filer {
     public static func ls(directory: StoreDirectory, dir: String = "") -> [File]? {
         return withDir(directory) { dirPath, manager in
             let path = "\(dirPath)/\(dir)"
-            return manager.contentsOfDirectoryAtPath(path, error: nil)?.map { "\(dir)/\($0 as! String)" }
+            return (try? manager.contentsOfDirectoryAtPath(path))?.map { "\(dir)/\($0 )" }
                 .map { path in File(directory: directory, path: path) }
         }
     }
@@ -80,7 +100,7 @@ public class Filer {
     public static func du(directory: StoreDirectory, path: String) -> UInt64 {
         return withDir(directory) { dirPath, manager in
             let path = "\(dirPath)/\(path)"
-            if let item: NSDictionary = manager.attributesOfItemAtPath(path, error: nil) {
+            if let item: NSDictionary = try? manager.attributesOfItemAtPath(path) {
                 return item.fileSize()
             }
             return 0

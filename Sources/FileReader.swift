@@ -18,7 +18,7 @@ public class FileReader {
         return readString()
     }
     public func readString() -> String {
-        return NSString(contentsOfFile: file.path, encoding: NSUTF8StringEncoding, error: nil) as! String
+        return (try! NSString(contentsOfFile: file.path, encoding: NSUTF8StringEncoding)) as String
     }
     public func readData() -> NSData? {
         return Filer.withDir(file.directory) { _, manager in

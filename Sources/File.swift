@@ -33,9 +33,7 @@ public enum StoreDirectory {
         case .Inbox:
             return "\(StoreDirectory.Library.path())/Inbox"
         case .SearchDirectory(let searchPathDirectory):
-            return NSSearchPathForDirectoriesInDomains(searchPathDirectory, .UserDomainMask, true)[0] as! String
-        default:
-            return "/"
+            return NSSearchPathForDirectoriesInDomains(searchPathDirectory, .UserDomainMask, true)[0] 
         }
     }
 
@@ -55,7 +53,7 @@ public enum StoreDirectory {
     }
 }
 
-public class File : Printable, Equatable {
+public class File : CustomStringConvertible, Equatable {
     private let writePath: String
     public let directory: StoreDirectory
     public let fileName: String
@@ -96,13 +94,13 @@ public class File : Printable, Equatable {
 
     public var url: NSURL {
         get {
-            return NSURL(fileURLWithPath: self.path)!
+            return NSURL(fileURLWithPath: self.path)
         }
     }
     
     public var ext: String? {
         get {
-            return split(fileName, isSeparator: { $0 == "." }).last
+            return fileName.characters.split(isSeparator: { $0 == "." }).map { String($0) }.last
         }
     }
 
@@ -139,7 +137,7 @@ public class File : Printable, Equatable {
     }
 
     public convenience init(url: NSURL) {
-        let (dir, dirName, fileName) = File.parsePath(url.absoluteString!)!
+        let (dir, dirName, fileName) = File.parsePath(url.absoluteString)!
         self.init(directory: dir, dirName: dirName, fileName: fileName)
     }
 
@@ -197,7 +195,7 @@ public class File : Printable, Equatable {
     public static func parsePath(string: String) -> (String?, String) {
         let comps = string.componentsSeparatedByString("/")
         let fileName = comps.last!
-        let dirName = join("/", dropLast(comps))
+        let dirName = comps.dropLast().joinWithSeparator("/")
         if dirName.isEmpty {
             return (nil, fileName)
         }
@@ -221,9 +219,9 @@ public class File : Printable, Equatable {
     }
 
     public static func toDirName(dirName: String) -> String {
-        switch Array(dirName).last {
+        switch Array(dirName.characters).last {
         case .Some("/"):
-            return dropLast(dirName)
+            return String(dirName.characters.dropLast())
         default:
             return dirName
         }
