@@ -106,4 +106,28 @@ public class Filer {
             return 0
         }
     }
+    
+    public static func isDirectory(directory: StoreDirectory, path: String) -> Bool {
+        return withDir(directory) { dirPath, manager in
+            let path = "\(dirPath)/\(path)"
+            var isDir : ObjCBool = false
+            if(manager.fileExistsAtPath(path,isDirectory: &isDir)){
+                return isDir.boolValue
+            }else{
+                return false
+            }
+        }
+    }
+    
+    public static func grep(directory: StoreDirectory, dir: String = "",contains:[String]) -> [File]? {
+        return ls(directory, dir:dir)?.filter {
+            var isContain = false
+            for str in contains{
+                if $0.path.containsString(str){
+                    isContain = true
+                }
+            }
+            return isContain
+        }
+    }
 }

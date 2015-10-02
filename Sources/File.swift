@@ -91,6 +91,12 @@ public class File : CustomStringConvertible, Equatable {
             return Filer.exists(directory, path: relativePath)
         }
     }
+    
+    public var isDirectory: Bool{
+        get{
+            return Filer.isDirectory(directory, path: relativePath)
+        }
+    }
 
     public var url: NSURL {
         get {
