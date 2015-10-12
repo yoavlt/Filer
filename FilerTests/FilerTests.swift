@@ -105,9 +105,10 @@ class FilerTests: XCTestCase {
         for file in sampleFiles {
             FileWriter(file: file).write("test!!")
         }
-        let files = Filer.ls(.Document, dir: "")!
+        let files = Filer.ls(.Document, dir: "")!.filter { $0.isDirectory == false }
         for file in files {
-            XCTAssert(contains(sampleFiles, value: file), "filename matches")
+            let contain = contains(sampleFiles, value: file)
+            XCTAssert(contain)
             Filer.rm(StoreDirectory.Document, path: file.fileName)
         }
     }
@@ -261,11 +262,47 @@ class FilerTests: XCTestCase {
     func testParseUrl() {
         Filer.mkdir(.Document, dirName: "hoge")
         let file = File(directory: .Document, path: "hoge/fuga.txt")
-        let (dir, dirName, fileName) = File.parsePath(file.url.absoluteString!)!
+        let (dir, dirName, fileName) = File.parsePath(file.url.absoluteString)!
         XCTAssertEqual(dir.path(), StoreDirectory.Document.path(), "parse StoreDirectory")
         XCTAssertEqual(dirName!, "/hoge", "parse dirName")
         XCTAssertEqual(fileName, "fuga.txt", "parse fileName")
         XCTAssert(Filer.rmdir(.Document, dirName: "hoge"))
+    }
+    
+    func testGrep() {
+        Filer.mkdir(.Document, dirName: "hoge")
+        let file = File(directory: .Document, path: "hoge/fuga.txt")
+        FileWriter(file: file).write("test!!")
+        let grepFiles = Filer.grep(.Document, dir: "hoge", contains: ["te"])!
+        XCTAssert(contains(grepFiles, value: file))
+        Filer.rm(.Document, path: "hoge/fuga.txt")
+    }
+    
+    func testTree() {
+        let sampleFileNames = ["test.txt", "test2.txt", "test3.txt"]
+        let sampleFiles = sampleFileNames.map { File(fileName: $0) }
+        for file in sampleFiles {
+            FileWriter(file: file).write("test!!")
+        }
+        
+        Filer.mkdir(.Document, dirName: "hoge")
+        let sampleDirFiles = sampleFileNames.map { File(directory: .Document, dirName: "hoge", fileName: $0) }
+        for file in sampleDirFiles {
+            FileWriter(file: file).write("test!!")
+        }
+
+        let files = Filer.tree(.Document)!
+        for file in files {
+            var contain = contains(sampleFiles, value: file)
+            if contain == false {
+                contain = contains(sampleDirFiles, value: file)
+            }
+            XCTAssert(contain)
+        }
+
+        for file in files {
+            Filer.rm(StoreDirectory.Document, path: file.fileName)
+        }
     }
 
     func testPerformanceExample() {

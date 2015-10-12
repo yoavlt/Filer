@@ -88,7 +88,7 @@ public class Filer {
     public static func ls(directory: StoreDirectory, dir: String = "") -> [File]? {
         return withDir(directory) { dirPath, manager in
             let path = "\(dirPath)/\(dir)"
-            return (try? manager.contentsOfDirectoryAtPath(path))?.map { "\(dir)/\($0 )" }
+            return (try? manager.contentsOfDirectoryAtPath(path))?.map { "\(dir)/\($0)" }
                 .map { path in File(directory: directory, path: path) }
         }
     }
@@ -119,15 +119,28 @@ public class Filer {
         }
     }
     
-    public static func grep(directory: StoreDirectory, dir: String = "",contains:[String]) -> [File]? {
-        return ls(directory, dir:dir)?.filter {
+    public static func grep(directory: StoreDirectory, dir: String = "", contains: [String]) -> [File]? {
+        return ls(directory, dir: dir)?.filter {
             var isContain = false
-            for str in contains{
-                if $0.path.containsString(str){
+            for str in contains {
+                let body = FileReader(file: $0).read()
+                if body.containsString(str) {
                     isContain = true
                 }
             }
             return isContain
         }
     }
+
+    public static func tree(directory: StoreDirectory, dir: String = "") -> [File]? {
+        let currentFiles = ls(directory, dir: dir)?.filter { $0.isDirectory == false }
+        let directories = ls(directory, dir: dir)?.filter { $0.isDirectory }
+        if let dirs = directories {
+            var files = dirs.map { (file: File) in Filer.tree(file.directory, dir: file.fileName) }
+            files.append(currentFiles)
+            return files.flatMap { $0 }.flatMap { $0 }
+        }
+        return currentFiles
+    }
+    
 }
