@@ -143,4 +143,19 @@ public class Filer {
         return currentFiles
     }
     
+    public static func df() -> Double {
+        let paths = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.LibraryDirectory, NSSearchPathDomainMask.UserDomainMask, true);
+        do {
+            let dict  = try NSFileManager.defaultManager().attributesOfFileSystemForPath(paths.last!)
+            let mb: Double = 1024 * 1024
+            if let freeSize = dict[NSFileSystemFreeSize]!.doubleValue {
+                return  freeSize / mb
+            } else {
+                return -1
+            }
+        } catch {
+            return -1
+        }
+    }
+    
 }
