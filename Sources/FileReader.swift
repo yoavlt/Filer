@@ -18,11 +18,15 @@ public class FileReader {
         return readString()
     }
     public func readString() -> String {
-        return NSString(contentsOfFile: file.path, encoding: NSUTF8StringEncoding, error: nil) as! String
+        do {
+            return try String(contentsOfFile: file.path, encoding: .utf8)
+        } catch {
+            return ""
+        }
     }
-    public func readData() -> NSData? {
-        return Filer.withDir(file.directory) { _, manager in
-            return manager.contentsAtPath(self.file.path)
+    public func readData() -> Data? {
+        return Filer.withDir(directory: file.directory) { _, manager in
+            return manager.contents(atPath: self.file.path)
         }
     }
     public func readImage() -> UIImage? {

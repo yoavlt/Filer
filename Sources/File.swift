@@ -16,26 +16,24 @@ public enum StoreDirectory {
     case Cache
     case Inbox
     case Library
-    case SearchDirectory(NSSearchPathDirectory)
+    case SearchDirectory(FileManager.SearchPathDirectory)
 
-    public func path() -> String {
+    public var path: String {
         switch self {
         case .Home:
             return NSHomeDirectory()
         case .Temp:
             return NSTemporaryDirectory()
         case .Document:
-            return StoreDirectory.SearchDirectory(.DocumentDirectory).path()
+            return StoreDirectory.SearchDirectory(.documentDirectory).path
         case .Cache:
-            return StoreDirectory.SearchDirectory(.CachesDirectory).path()
+            return StoreDirectory.SearchDirectory(.cachesDirectory).path
         case .Library:
-            return StoreDirectory.SearchDirectory(.LibraryDirectory).path()
+            return StoreDirectory.SearchDirectory(.libraryDirectory).path
         case .Inbox:
-            return "\(StoreDirectory.Library.path())/Inbox"
-        case .SearchDirectory(let searchPathDirectory):
-            return NSSearchPathForDirectoriesInDomains(searchPathDirectory, .UserDomainMask, true)[0] as! String
-        default:
-            return "/"
+            return "\(StoreDirectory.Library.path)/Inbox"
+        case .SearchDirectory(let directory):
+            return FileManager.default.urls(for: directory, in: .userDomainMask).first?.path ?? "/"
         }
     }
 
@@ -55,7 +53,7 @@ public enum StoreDirectory {
     }
 }
 
-public class File : Printable, Equatable {
+public class File : CustomStringConvertible, Equatable {
     private let writePath: String
     public let directory: StoreDirectory
     public let fileName: String
@@ -77,6 +75,10 @@ public class File : Printable, Equatable {
             return "\(dirPath)/\(fileName)"
         }
     }
+    
+    public var url: URL {
+        return URL(fileURLWithPath: dirPath).appendingPathComponent(fileName)
+    }
 
     public var relativePath: String {
         get {
@@ -90,19 +92,13 @@ public class File : Printable, Equatable {
 
     public var isExists: Bool {
         get {
-            return Filer.exists(directory, path: relativePath)
-        }
-    }
-
-    public var url: NSURL {
-        get {
-            return NSURL(fileURLWithPath: self.path)!
+            return Filer.exists(directory: directory, path: relativePath)
         }
     }
     
     public var ext: String? {
         get {
-            return split(fileName, isSeparator: { $0 == "." }).last
+            return fileName.split(separator: ".").last.map { String ($0) }
         }
     }
 
@@ -115,17 +111,17 @@ public class File : Printable, Equatable {
     public init(directory: StoreDirectory, dirName: String?, fileName: String) {
         self.directory = directory
         if dirName != nil {
-            self.dirName = File.toDirName(dirName!)
+            self.dirName = File.toDirName(dirName: dirName!)
         }
         self.fileName = fileName
-        self.writePath = directory.path()
+        self.writePath = directory.path
     }
 
     public convenience init(directory: StoreDirectory, path: String) {
         if path.isEmpty {
             self.init(directory: StoreDirectory.Document, dirName: nil, fileName: "")
         } else {
-            let (dirName, fileName) = File.parsePath(path)
+            let (dirName, fileName) = File.parsePath(string: path)
             self.init(directory: directory, dirName: dirName, fileName: fileName)
         }
     }
@@ -139,27 +135,27 @@ public class File : Printable, Equatable {
     }
 
     public convenience init(url: NSURL) {
-        let (dir, dirName, fileName) = File.parsePath(url.absoluteString!)!
+        let (dir, dirName, fileName) = File.parsePath(absoluteString: url.absoluteString!)!
         self.init(directory: dir, dirName: dirName, fileName: fileName)
     }
 
     public func delete() -> Bool {
-        return Filer.rm(directory, path: self.fileName)
+        return Filer.rm(directory: directory, path: self.fileName)
     }
     
     public func copyTo(toPath: String) -> Bool {
-        return Filer.cp(directory, srcPath: relativePath, toPath: toPath)
+        return Filer.cp(directory: directory, srcPath: relativePath, toPath: toPath)
     }
     
     public func moveTo(toPath: String) -> Bool {
-        return Filer.mv(directory, srcPath: relativePath, toPath: toPath)
+        return Filer.mv(directory: directory, srcPath: relativePath, toPath: toPath)
     }
     
     public func read() -> String {
         return FileReader(file: self).read()
     }
 
-    public func readData() -> NSData? {
+    public func readData() -> Data? {
         return FileReader(file: self).readData()
     }
 
@@ -168,36 +164,36 @@ public class File : Printable, Equatable {
     }
 
     public func write(body: String) -> Bool {
-        return FileWriter(file: self).write(body)
+        return FileWriter(file: self).write(body: body)
     }
 
-    public func writeData(data: NSData) -> Bool {
-        return FileWriter(file: self).writeData(data)
+    public func writeData(data: Data) -> Bool {
+        return FileWriter(file: self).writeData(data: data)
     }
     
     public func writeImage(image: UIImage, format: ImageFormat) -> Bool {
-        return FileWriter(file: self).writeImage(image, format: format)
+        return FileWriter(file: self).writeImage(image: image, format: format)
     }
 
     public func append(body: String) -> Bool {
         if self.isExists == false {
-            return FileWriter(file: self).write(body)
+            return FileWriter(file: self).write(body: body)
         }
-        return FileWriter(file: self).append(body)
+        return FileWriter(file: self).append(body: body)
     }
 
-    public func appendData(data: NSData) -> Bool {
+    public func appendData(data: Data) -> Bool {
         if self.isExists == false {
-            return FileWriter(file: self).writeData(data)
+            return FileWriter(file: self).writeData(data: data)
         }
-        return FileWriter(file: self).appendData(data)
+        return FileWriter(file: self).appendData(data: data)
     }
     
     // MARK: static methods
     public static func parsePath(string: String) -> (String?, String) {
-        let comps = string.componentsSeparatedByString("/")
+        let comps = string.components(separatedBy: "/")
         let fileName = comps.last!
-        let dirName = join("/", dropLast(comps))
+        let dirName = comps.dropLast().joined(separator: "/")
         if dirName.isEmpty {
             return (nil, fileName)
         }
@@ -205,14 +201,14 @@ public class File : Printable, Equatable {
     }
 
     public static func parsePath(absoluteString: String) -> (StoreDirectory, String?, String)? {
-        let comps = absoluteString.componentsSeparatedByString(NSHomeDirectory())
+        let comps = absoluteString.components(separatedBy: NSHomeDirectory())
         let names = Array(StoreDirectory.paths().keys)
         if let homeRelativePath = comps.last {
-            let firstMathes = names.filter { homeRelativePath.rangeOfString($0) != nil }.first
-            if let name = firstMathes {
-                if let dir = StoreDirectory.from(name) {
-                    let path = homeRelativePath.stringByReplacingOccurrencesOfString(name, withString: "", options: .LiteralSearch, range: nil)
-                    let (dirName, fileName) = parsePath(path)
+            let firstMatches = names.first { homeRelativePath.range(of: $0) != nil }
+            if let name = firstMatches {
+                if let dir = StoreDirectory.from(string: name) {
+                    let path = homeRelativePath.replacingOccurrences(of: name, with: "")
+                    let (dirName, fileName) = parsePath(string: path)
                     return (dir, dirName, fileName)
                 }
             }
@@ -221,10 +217,9 @@ public class File : Printable, Equatable {
     }
 
     public static func toDirName(dirName: String) -> String {
-        switch Array(dirName).last {
-        case .Some("/"):
-            return dropLast(dirName)
-        default:
+        if dirName.hasSuffix("/") {
+            return String(dirName.dropLast())
+        } else {
             return dirName
         }
     }
@@ -234,22 +229,21 @@ public func ==(lhs: File, rhs: File) -> Bool {
     return lhs.path == rhs.path
 }
 
-infix operator ->> { associativity left }
+infix operator ->>: AdditionPrecedence
+infix operator -->: AdditionPrecedence
 
 public func ->>(lhs: String, rhs: File) -> Bool {
-    return rhs.append(lhs)
+    return rhs.append(body: lhs)
 }
 
-public func ->>(lhs: NSData, rhs: File) -> Bool {
-    return rhs.appendData(lhs)
+public func ->>(lhs: Data, rhs: File) -> Bool {
+    return rhs.appendData(data: lhs)
 }
-
-infix operator --> { associativity left }
 
 public func -->(lhs: String, rhs: File) -> Bool {
-    return rhs.write(lhs)
+    return rhs.write(body: lhs)
 }
 
-public func -->(lhs: NSData, rhs: File) -> Bool {
-    return rhs.writeData(lhs)
+public func -->(lhs: Data, rhs: File) -> Bool {
+    return rhs.writeData(data: lhs)
 }

@@ -21,37 +21,47 @@ public class FileWriter {
     }
 
     public func write(body: String) -> Bool {
-        return writeString(body)
+        return writeString(body: body)
     }
 
     public func append(body: String) -> Bool {
-        return appendString(body)
+        return appendString(body: body)
     }
 
     public func writeString(body: String) -> Bool {
-        return body.writeToFile(file.path, atomically: true, encoding: NSUTF8StringEncoding, error: nil)
+        do {
+            try body.write(toFile: file.path, atomically: true, encoding: .utf8)
+            return true
+        } catch {
+            return false
+        }
     }
 
     public func appendString(body: String) -> Bool {
-        if let data = body.dataUsingEncoding(NSUTF8StringEncoding) {
-            return appendData(data)
+        if let data = body.data(using: .utf8) {
+            return appendData(data: data)
         }
         return false
     }
 
-    public func writeData(data: NSData) -> Bool {
-        return data.writeToFile(file.path, atomically: true)
-    }
-
-    public func appendData(data: NSData) -> Bool {
-        return withHandler(file.path) { handle in
-            handle.seekToEndOfFile()
-            handle.writeData(data)
+    public func writeData(data: Data) -> Bool {
+        do {
+            try data.write(to: file.url, options: .atomic)
+            return true
+        } catch {
+            return false
         }
     }
 
-    public func withHandler(path: String, f: (NSFileHandle) -> ()) -> Bool {
-        if let handler = NSFileHandle(forWritingAtPath: path) {
+    public func appendData(data: Data) -> Bool {
+        return withHandler(path: file.path) { handle in
+            handle.seekToEndOfFile()
+            handle.write(data)
+        }
+    }
+
+    public func withHandler(path: String, f: (FileHandle) -> ()) -> Bool {
+        if let handler = FileHandle(forWritingAtPath: path) {
             f(handler)
             handler.closeFile()
             return true
@@ -60,16 +70,19 @@ public class FileWriter {
     }
 
     public func writeImage(image: UIImage, format: ImageFormat) -> Bool {
-        let data = imageToData(image, format: format)
-        return writeData(data)
+        if let data = imageToData(image: image, format: format) {
+            return writeData(data: data)
+        } else {
+            return false
+        }
     }
 
-    private func imageToData(image: UIImage, format: ImageFormat) -> NSData {
+    private func imageToData(image: UIImage, format: ImageFormat) -> Data? {
         switch format {
         case .Png:
-            return UIImagePNGRepresentation(image)
+            return image.pngData()
         case .Jpeg(let quality):
-            return UIImageJPEGRepresentation(image, quality)
+            return image.jpegData(compressionQuality: quality)
         }
     }
 }
